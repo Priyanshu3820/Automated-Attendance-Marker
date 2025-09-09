@@ -1,0 +1,15 @@
+{
+  "name": "attendance-system",
+  "version": "1.0.0",
+  "description": "Automated Student Attendance Monitoring and Analytics System",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
