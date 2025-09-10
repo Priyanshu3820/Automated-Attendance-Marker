@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section B - Maths</title>
+    <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+    <header>
+        <h1>Maths Attendance - Section B</h1>
+    </header>
+    <div class="container">
+        <button id="attendance-btn">Start Attendance</button>
+        <div id="timer"></div>
+        <h3>Student Status</h3>
+        <div id="student-list">
+            <!-- Student status will be dynamically inserted here -->
+        </div>
+        <br>
+        <a href="faculty.html">Back to Faculty Portal</a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <!-- Your Firebase config -->
+    <script defer src="firebase.js"></script>
+    
+    <!-- Page-specific logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (typeof firebase === 'undefined' || typeof firebase.database === 'undefined') {
+                    console.error('Firebase scripts not loaded or initialized correctly.');
+                    alert('Error: Could not connect to Firebase. Please check your configuration and network connection.');
+                    return;
+                }
+
+                const attendanceBtn = document.getElementById('attendance-btn');
+                const timerDiv = document.getElementById('timer');
+                const studentListDiv = document.getElementById('student-list');
+                
+                const classId = 'maths';
+                const attendanceRef = firebase.database().ref(`attendance/${classId}`);
+                const statusRef = attendanceRef.child('status');
+                const studentsRef = attendanceRef.child('students');
+
+                let timerInterval;
+                let presentStudents = {};
+                let attendanceStatus = null;
+                const allStudents = ['Student1', 'Student2', 'Student3', 'Student4'];
+
+                function renderStudentList() {
+                    studentListDiv.innerHTML = '';
+                    
+                    allStudents.forEach(studentId => {
+                        const isPresent = presentStudents[studentId];
+                        let status = '';
+                        let statusClass = '';
+
+                        if (isPresent) {
+                            status = 'Present';
+                            statusClass = 'present';
+                        } else {
+                            if (attendanceStatus === 'closed') {
+                                status = 'Absent';
+                                statusClass = 'absent';
+                            } else {
+                                status = ''; // Blank space as requested
+                                statusClass = 'pending';
+                            }
+                        }
+                        
+                        const studentP = document.createElement('p');
+                        studentP.innerHTML = `${studentId}: <span class="${statusClass}">${status}</span>`;
+                        studentListDiv.appendChild(studentP);
+                    });
+                }
+
+                attendanceBtn.addEventListener('click', () => {
+                    statusRef.get().then((snapshot) => {
+                        if (snapshot.val() === 'open') {
+                            stopAttendance();
+                        } else {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(position => {
+                                    startAttendance(position.coords.latitude, position.coords.longitude);
+                                }, handleLocationError);
+                            } else {
+                                alert('Geolocation is not supported by this browser.');
+                            }
+                        }
+                    }).catch(err => {
+                        console.error("Error accessing Firebase:", err);
+                        alert("Could not access Firebase. Is your databaseURL in firebase.js correct?");
+                    });
+                });
+
+                function handleLocationError(error) {
+                    let message = 'An unknown error occurred.';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = "Location permission denied. Please enable it in your browser settings.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = "Location information is unavailable.";
+                            break;
+                        case error.TIMEOUT:
+                            message = "The request to get user location timed out.";
+                            break;
+                    }
+                    alert(`Unable to retrieve your location: ${message}`);
+                }
+
+                function startAttendance(latitude, longitude) {
+                    // Clear previous student data for a new session
+                    studentsRef.set({}); 
+
+                    const now = Date.now();
+                    const updates = {
+                        status: 'open',
+                        startTime: firebase.database.ServerValue.TIMESTAMP,
+                        endTime: now + 15 * 60 * 1000,
+                        facultyLatitude: latitude,
+                        facultyLongitude: longitude
+                    };
+                    attendanceRef.update(updates);
+                }
+
+                function stopAttendance() {
+                    statusRef.set('closed');
+                }
+
+                statusRef.on('value', (snapshot) => {
+                    attendanceStatus = snapshot.val();
+                    renderStudentList(); // Re-render when status changes
+
+                    if (attendanceStatus === 'open') {
+                        attendanceBtn.textContent = 'Stop Attendance';
+                        attendanceRef.child('endTime').once('value').then((snap) => {
+                            const endTime = snap.val();
+                            if(endTime) {
+                                clearInterval(timerInterval);
+                                timerInterval = setInterval(() => updateTimer(endTime), 1000);
+                                updateTimer(endTime);
+                            }
+                        });
+                    } else {
+                        attendanceBtn.textContent = 'Start Attendance';
+                        timerDiv.textContent = 'Attendance Closed';
+                        clearInterval(timerInterval);
+                    }
+                });
+
+                studentsRef.on('value', (snapshot) => {
+                    presentStudents = snapshot.val() || {};
+                    renderStudentList(); // Re-render when a student checks in
+                });
+
+                function updateTimer(endTime) {
+                    const now = Date.now();
+                    const remainingTime = Math.max(0, endTime - now);
+                    
+                    if (remainingTime === 0) {
+                        timerDiv.textContent = "Time's up!";
+                        clearInterval(timerInterval);
+                        statusRef.get().then(snap => {
+                            if(snap.val() === 'open') {
+                               stopAttendance(); // This will trigger the statusRef listener and re-render
+                            }
+                        });
+                        return;
+                    }
+                    
+                    const minutes = Math.floor((remainingTime / 1000) / 60);
+                    const seconds = Math.floor((remainingTime / 1000) % 60);
+                    
+                    timerDiv.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                }
+                
+                // Initial render on page load
+                statusRef.get().then(snap => {
+                    attendanceStatus = snap.val();
+                    studentsRef.get().then(studentSnap => {
+                        presentStudents = studentSnap.val() || {};
+                        renderStudentList();
+                    })
+                })
+
+            }, 500);
+        });
+    </script>
+</body>
+</html>

@@ -5,6 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal</title>
     <link rel="stylesheet" href="public/style.css">
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {background-color: #f1f1f1}
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -12,7 +40,20 @@
     </header>
     <div class="container">
         <h2>Welcome, Student!</h2>
-        <p>This is the student portal. Please proceed to your dashboard.</p>
+        <div class="student-container">
+            <div class="dropdown">
+                <div class="student-box todays-classes-box">
+                    <h3>Today's Classes</h3>
+                </div>
+                <div class="dropdown-content">
+                    <a href="physics.html">Physics - 10:00 am to 11:00 am</a>
+                    <a href="maths.html">Maths - 11:30 am to 12:30 pm</a>
+                </div>
+            </div>
+            <div class="student-box attendance-record-box" onclick="location.href='attendance-record.html';">
+                <h3>Attendance Record</h3>
+            </div>
+        </div>
         <a href="/">Back to Home</a>
     </div>
 </body>
