@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maths</title>
+    <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+    <header>
+        <h1>Maths</h1>
+    </header>
+    <div class="container">
+        <h2>11:00 am to 12:00 pm</h2>
+        <div id="timer"></div>
+        <button id="mark-attendance-btn" style="display: none;">Mark Attendance</button>
+        <p id="attendance-status"></p>
+        <br>
+        <a href="student.html">Back to Student Portal</a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <!-- Your Firebase config -->
+    <script defer src="firebase.js"></script>
+
+    <!-- Page-specific logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // A small delay to ensure Firebase initializes.
+            setTimeout(() => {
+                if (typeof firebase === 'undefined' || typeof firebase.database === 'undefined') {
+                    console.error('Firebase scripts not loaded or initialized correctly.');
+                    alert('Error: Could not connect to Firebase. Please check your configuration and network connection.');
+                    return;
+                }
+
+                const markAttendanceBtn = document.getElementById('mark-attendance-btn');
+                const timerDiv = document.getElementById('timer');
+                const statusP = document.getElementById('attendance-status');
+
+                const studentId = 'Student1'; // In a real app, this would be dynamic
+                const classId = 'maths';
+
+                const attendanceRef = firebase.database().ref(`attendance/${classId}`);
+                const statusRef = attendanceRef.child('status');
+                const studentStatusRef = attendanceRef.child('students').child(studentId);
+
+                let timerInterval;
+
+                markAttendanceBtn.addEventListener('click', () => {
+                    studentStatusRef.set(true);
+                });
+
+                statusRef.on('value', (snapshot) => {
+                    const status = snapshot.val();
+                    if (status === 'open') {
+                        statusP.textContent = 'Attendance is now open!';
+                        studentStatusRef.get().then(snap => {
+                            if (!snap.val()) {
+                                markAttendanceBtn.style.display = 'block';
+                                markAttendanceBtn.disabled = false;
+                                markAttendanceBtn.textContent = 'Mark Attendance';
+                            }
+                        });
+
+                        attendanceRef.child('endTime').once('value').then((snap) => {
+                            const endTime = snap.val();
+                            if (endTime) {
+                                clearInterval(timerInterval);
+                                timerInterval = setInterval(() => updateTimer(endTime), 1000);
+                                updateTimer(endTime);
+                            }
+                        });
+
+                    } else {
+                        statusP.textContent = 'Attendance is currently closed.';
+                        markAttendanceBtn.style.display = 'none';
+                        clearInterval(timerInterval);
+                        timerDiv.textContent = '';
+                    }
+                });
+
+                studentStatusRef.on('value', (snapshot) => {
+                    if (snapshot.val() === true) {
+                        markAttendanceBtn.textContent = 'Attendance Marked';
+                        markAttendanceBtn.disabled = true;
+                        statusP.textContent = 'Your attendance has been recorded.';
+                    }
+                });
+
+                function updateTimer(endTime) {
+                    const now = Date.now();
+                    const remainingTime = Math.max(0, endTime - now);
+
+                    if (remainingTime === 0) {
+                        timerDiv.textContent = "Time's up!";
+                        clearInterval(timerInterval);
+                        return;
+                    }
+                    
+                    const minutes = Math.floor((remainingTime / 1000) / 60);
+                    const seconds = Math.floor((remainingTime / 1000) % 60);
+                    
+                    timerDiv.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                }
+            }, 500); // 500ms delay
+        });
+    </script>
+</body>
+</html>
