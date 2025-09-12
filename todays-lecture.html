@@ -4,7 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Lectures</title>
-    <link rel="stylesheet" href="public/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(to right, #3494e6, #3457D5);
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .lecture-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .lecture-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .lecture-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #3494e6, #3457D5);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .lecture-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .lecture-box:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .lecture-box h3 {
+            color: #3457D5;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .lecture-box p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .lecture-box .time-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #3494e6;
+        }
+        
+        a {
+            display: block;
+            text-align: center;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: #3457D5;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            width: fit-content;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(52, 87, 213, 0.3);
+        }
+        
+        a:hover {
+            background: #3494e6;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(52, 87, 213, 0.4);
+        }
+        
+        .tooltip {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #3457D5;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, bottom 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .lecture-box:hover .tooltip {
+            opacity: 1;
+            bottom: -30px;
+        }
+        
+        @media (max-width: 768px) {
+            .lecture-details {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .lecture-box {
+                width: 90%;
+                max-width: 350px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -13,15 +158,60 @@
     <div class="container">
         <div class="lecture-details">
             <div class="lecture-box">
+                <div class="time-icon">⏰</div>
                 <h3>Section A</h3>
                 <p>Monday 10:00 AM</p>
+                <div class="tooltip">Click for more details</div>
             </div>
             <div class="lecture-box">
+                <div class="time-icon">⏰</div>
                 <h3>Section B</h3>
                 <p>Tuesday 9:00 AM</p>
+                <div class="tooltip">Click for more details</div>
             </div>
         </div>
         <a href="faculty.html">Back to Faculty Portal</a>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all lecture boxes
+            const lectureBoxes = document.querySelectorAll('.lecture-box');
+            
+            // Add click event to each box
+            lectureBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    const section = this.querySelector('h3').textContent;
+                    const time = this.querySelector('p').textContent;
+                    
+                    alert(`You selected ${section}\nTime: ${time}\nThis would typically open more detailed information.`);
+                });
+            });
+            
+            // Add mousemove effect for more interactive hover
+            document.addEventListener('mousemove', function(e) {
+                const boxes = document.querySelectorAll('.lecture-box');
+                
+                boxes.forEach(box => {
+                    const rect = box.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                        // Mouse is inside the box
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        
+                        const angleX = (y - centerY) / 10;
+                        const angleY = (centerX - x) / 10;
+                        
+                        box.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateZ(10px)`;
+                    } else {
+                        box.style.transform = '';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

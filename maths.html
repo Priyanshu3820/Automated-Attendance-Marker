@@ -4,7 +4,171 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maths</title>
-    <link rel="stylesheet" href="public/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        #timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        #mark-attendance-btn {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+            margin: 1rem 0;
+        }
+        
+        #mark-attendance-btn:hover {
+            background: linear-gradient(to right, #27ae60, #219653);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(46, 204, 113, 0.4);
+        }
+        
+        #mark-attendance-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        #mark-attendance-btn:disabled {
+            background: linear-gradient(to right, #7f8c8d, #95a5a6);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #attendance-status {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .status-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        a {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            background-color: #f8f9fa;
+            text-decoration: underline;
+            transform: translateY(-2px);
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 16px rgba(46, 204, 113, 0.5);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            #timer {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -53,8 +217,27 @@
 
                 let timerInterval;
 
+                // Function to update status message with appropriate styling
+                function updateStatus(message, type = 'info') {
+                    statusP.textContent = message;
+                    statusP.className = ''; // Clear previous classes
+                    statusP.classList.add(`status-${type}`);
+                }
+
+                // Add hover effect to the mark attendance button
+                markAttendanceBtn.addEventListener('mouseenter', function() {
+                    if (!this.disabled) {
+                        this.classList.add('pulse');
+                    }
+                });
+                
+                markAttendanceBtn.addEventListener('mouseleave', function() {
+                    this.classList.remove('pulse');
+                });
+
                 markAttendanceBtn.addEventListener('click', () => {
                     if (navigator.geolocation) {
+                        updateStatus('Getting your location...', 'info');
                         navigator.geolocation.getCurrentPosition(position => {
                             const studentLat = position.coords.latitude;
                             const studentLon = position.coords.longitude;
@@ -66,16 +249,21 @@
 
                                     if (distance <= maxDistanceMeters) {
                                         studentStatusRef.set(true);
+                                        updateStatus('Location verified! Marking attendance...', 'info');
                                     } else {
-                                        statusP.textContent = 'You are out of range.';
+                                        updateStatus(`You are ${distance.toFixed(2)} meters away from class. Maximum allowed is ${maxDistanceMeters} meters.`, 'error');
                                     }
                                 } else {
-                                    statusP.textContent = 'Could not get faculty location. Please try again.';
+                                    updateStatus('Could not get faculty location. Please try again.', 'error');
                                 }
                             });
-                        }, handleLocationError);
+                        }, handleLocationError, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        });
                     } else {
-                        statusP.textContent = 'Geolocation is not supported by this browser.';
+                        updateStatus('Geolocation is not supported by this browser.', 'error');
                     }
                 });
 
@@ -92,13 +280,13 @@
                             message = "The request to get user location timed out.";
                             break;
                     }
-                    statusP.textContent = `Unable to retrieve your location: ${message}`;
+                    updateStatus(`Unable to retrieve your location: ${message}`, 'error');
                 }
 
                 statusRef.on('value', (snapshot) => {
                     const status = snapshot.val();
                     if (status === 'open') {
-                        statusP.textContent = 'Attendance is now open!';
+                        updateStatus('Attendance is now open!', 'info');
                         studentStatusRef.get().then(snap => {
                             if (!snap.val()) {
                                 markAttendanceBtn.style.display = 'block';
@@ -117,7 +305,7 @@
                         });
 
                     } else {
-                        statusP.textContent = 'Attendance is currently closed.';
+                        updateStatus('Attendance is currently closed.', 'info');
                         markAttendanceBtn.style.display = 'none';
                         clearInterval(timerInterval);
                         timerDiv.textContent = '';
@@ -128,7 +316,8 @@
                     if (snapshot.val() === true) {
                         markAttendanceBtn.textContent = 'Attendance Marked';
                         markAttendanceBtn.disabled = true;
-                        statusP.textContent = 'Your attendance has been recorded.';
+                        markAttendanceBtn.classList.remove('pulse');
+                        updateStatus('Your attendance has been recorded successfully!', 'success');
                     }
                 });
 
@@ -139,6 +328,8 @@
                     if (remainingTime === 0) {
                         timerDiv.textContent = "Time's up!";
                         clearInterval(timerInterval);
+                        markAttendanceBtn.disabled = true;
+                        markAttendanceBtn.style.display = 'block';
                         return;
                     }
                     
@@ -146,6 +337,14 @@
                     const seconds = Math.floor((remainingTime / 1000) % 60);
                     
                     timerDiv.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    
+                    // Add visual indication when time is running low
+                    if (minutes < 1) {
+                        timerDiv.style.color = '#ff4757';
+                        timerDiv.style.fontWeight = 'bold';
+                    } else {
+                        timerDiv.style.color = '#e74c3c';
+                    }
                 }
 
                 function calculateDistance(lat1, lon1, lat2, lon2) {

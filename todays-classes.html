@@ -4,14 +4,372 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Classes</title>
-    <link rel="stylesheet" href="public/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-link i {
+            margin-right: 8px;
+        }
+
+        .classes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .class-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .class-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .class-header {
+            padding: 20px;
+            color: white;
+            position: relative;
+        }
+
+        .class-time {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .class-body {
+            padding: 20px;
+        }
+
+        .class-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .class-details {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .class-details li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .class-details i {
+            margin-right: 10px;
+            color: #6a11cb;
+            width: 20px;
+        }
+
+        .class-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #6a11cb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4d0da3;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .no-classes {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            grid-column: 1 / -1;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .no-classes i {
+            font-size: 4rem;
+            color: #6a11cb;
+            margin-bottom: 20px;
+        }
+
+        .no-classes p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .filter-options {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .classes-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .filter-btn {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Today's Classes</h1>
+        <p>Wednesday, October 18</p>
     </header>
+    
     <div class="container">
-        <a href="student.html">Back to Student Portal</a>
+        <a href="student.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>Back to Student Portal
+        </a>
+        
+        <div class="filter-options">
+            <button class="filter-btn active">All Classes</button>
+            <button class="filter-btn">Morning</button>
+            <button class="filter-btn">Afternoon</button>
+        </div>
+        
+        <div class="classes-container">
+            <!-- Class Card 1 -->
+            <div class="class-card">
+                <div class="class-header" style="background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);">
+                    <span class="class-time">9:00 - 10:30 AM</span>
+                    <h3>Mathematics</h3>
+                </div>
+                <div class="class-body">
+                    <h4 class="class-title">Advanced Calculus</h4>
+                    <ul class="class-details">
+                        <li><i class="fas fa-user"></i> Prof. Johnson</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Room 302</li>
+                        <li><i class="fas fa-info-circle"></i> Chapter 5: Integration Techniques</li>
+                    </ul>
+                    <div class="class-actions">
+                        <button class="btn btn-primary">Join Class</button>
+                        <button class="btn btn-secondary">Materials</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Class Card 2 -->
+            <div class="class-card">
+                <div class="class-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <span class="class-time">11:00 - 12:30 PM</span>
+                    <h3>Computer Science</h3>
+                </div>
+                <div class="class-body">
+                    <h4 class="class-title">Web Development</h4>
+                    <ul class="class-details">
+                        <li><i class="fas fa-user"></i> Dr. Martinez</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Computer Lab B</li>
+                        <li><i class="fas fa-info-circle"></i> JavaScript & API Integration</li>
+                    </ul>
+                    <div class="class-actions">
+                        <button class="btn btn-primary">Join Class</button>
+                        <button class="btn btn-secondary">Materials</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Class Card 3 -->
+            <div class="class-card">
+                <div class="class-header" style="background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);">
+                    <span class="class-time">2:00 - 3:30 PM</span>
+                    <h3>Literature</h3>
+                </div>
+                <div class="class-body">
+                    <h4 class="class-title">Modern Poetry</h4>
+                    <ul class="class-details">
+                        <li><i class="fas fa-user"></i> Dr. Williams</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Room 105</li>
+                        <li><i class="fas fa-info-circle"></i> Analysis of T.S. Eliot</li>
+                    </ul>
+                    <div class="class-actions">
+                        <button class="btn btn-primary">Join Class</button>
+                        <button class="btn btn-secondary">Materials</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effect to class cards
+            const classCards = document.querySelectorAll('.class-card');
+            
+            classCards.forEach(card => {
+                // Add event listener for mouseenter
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                    this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.25)';
+                });
+                
+                // Add event listener for mouseleave
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.15)';
+                });
+                
+                // Add click effect
+                card.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseup', function() {
+                    this.style.transform = 'translateY(-10px)';
+                });
+            });
+            
+            // Filter buttons functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Here you would typically filter the classes
+                    // For this example, we'll just log the filter
+                    console.log(`Filtering by: ${this.textContent}`);
+                });
+            });
+            
+            // Join class button functionality
+            const joinButtons = document.querySelectorAll('.btn-primary');
+            
+            joinButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    alert('Joining class...');
+                    // Here you would typically redirect to the class page
+                });
+            });
+            
+            // Materials button functionality
+            const materialButtons = document.querySelectorAll('.btn-secondary');
+            
+            materialButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    alert('Opening class materials...');
+                    // Here you would typically open the materials page
+                });
+            });
+        });
+    </script>
 </body>
 </html>

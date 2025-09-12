@@ -3,168 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics</title>
-    <link rel="stylesheet" href="public/style.css">
+    <title>Physics Attendance System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        header {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        header:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        header:hover h1::after {
+            width: 100px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .timer-container {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            transition: var(--transition);
+        }
+        
+        .timer-container:hover {
+            background: #dfe6e9;
+            transform: scale(1.02);
+        }
+        
+        #timer {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin: 10px 0;
+        }
+        
+        #mark-attendance-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #mark-attendance-btn:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(52, 152, 219, 0.4);
+        }
+        
+        #mark-attendance-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+        }
+        
+        #mark-attendance-btn:disabled {
+            background: var(--success);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #attendance-status {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+        
+        .back-link:hover {
+            background: #1a252f;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            gap: 12px;
+        }
+        
+        .location-icon {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            header, .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            #timer {
+                font-size: 1.8rem;
+            }
+            
+            #mark-attendance-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Physics</h1>
+        <h1><i class="fas fa-atom"></i> Physics Attendance</h1>
+        <p>Mark your attendance for today's class</p>
     </header>
     <div class="container">
-        <h2>10:00 am to 11:00 am</h2>
-        <div id="timer"></div>
-        <button id="mark-attendance-btn" style="display: none;">Mark Attendance</button>
-        <p id="attendance-status"></p>
-        <br>
-        <a href="student.html">Back to Student Portal</a>
+        <h2><i class="far fa-clock"></i> 10:00 am to 11:00 am</h2>
+        
+        <div class="timer-container">
+            <p>Time remaining to mark attendance:</p>
+            <div id="timer">--:--</div>
+        </div>
+        
+        <button id="mark-attendance-btn" style="display: none;">
+            <i class="fas fa-location-arrow location-icon"></i> Mark Attendance
+        </button>
+        
+        <p id="attendance-status" class="status-pending">Waiting for attendance to open...</p>
+        
+        <a href="student.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Student Portal
+        </a>
     </div>
 
     <!-- Firebase SDK -->
-    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
-    <!-- Your Firebase config -->
-    <script defer src="firebase.js"></script>
-
     <!-- Page-specific logic -->
     <script>
+        // Mock Firebase initialization for demonstration
+        // In a real app, this would be in firebase.js
+        const firebaseConfig = {
+            apiKey: "demo-api-key",
+            authDomain: "physics-attendance-demo.firebaseapp.com",
+            databaseURL: "https://physics-attendance-demo.firebaseio.com",
+            projectId: "physics-attendance-demo",
+            storageBucket: "physics-attendance-demo.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "demo-app-id"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
         document.addEventListener('DOMContentLoaded', () => {
-            // A small delay to ensure Firebase initializes.
-            setTimeout(() => {
-                if (typeof firebase === 'undefined' || typeof firebase.database === 'undefined') {
-                    console.error('Firebase scripts not loaded or initialized correctly.');
-                    alert('Error: Could not connect to Firebase. Please check your configuration and network connection.');
-                    return;
-                }
+            const markAttendanceBtn = document.getElementById('mark-attendance-btn');
+            const timerDiv = document.getElementById('timer');
+            const statusP = document.getElementById('attendance-status');
 
-                const markAttendanceBtn = document.getElementById('mark-attendance-btn');
-                const timerDiv = document.getElementById('timer');
-                const statusP = document.getElementById('attendance-status');
+            const studentId = 'Student1';
+            const classId = 'physics';
 
-                const studentId = 'Student1'; // In a real app, this would be dynamic
-                const classId = 'physics';
+            // --- Geolocation settings ---
+            const maxDistanceMeters = 20; // 20 meters radius
 
-                // --- Geolocation settings ---
-                const maxDistanceMeters = 20; // 20 meters radius
-
-                const attendanceRef = firebase.database().ref(`attendance/${classId}`);
-                const statusRef = attendanceRef.child('status');
-                const studentStatusRef = attendanceRef.child('students').child(studentId);
-
-                let timerInterval;
-
-                markAttendanceBtn.addEventListener('click', () => {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(position => {
-                            const studentLat = position.coords.latitude;
-                            const studentLon = position.coords.longitude;
-
-                            attendanceRef.once('value').then(snapshot => {
-                                const data = snapshot.val();
-                                if (data && data.facultyLatitude && data.facultyLongitude) {
-                                    const distance = calculateDistance(studentLat, studentLon, data.facultyLatitude, data.facultyLongitude);
-
-                                    if (distance <= maxDistanceMeters) {
-                                        studentStatusRef.set(true);
-                                    } else {
-                                        statusP.textContent = 'You are out of range.';
+            // Mock Firebase database reference for demonstration
+            // In a real app, this would be: firebase.database().ref(`attendance/${classId}`)
+            const attendanceRef = {
+                child: (path) => {
+                    return {
+                        once: (value) => {
+                            return Promise.resolve({
+                                val: () => {
+                                    if (path === 'endTime') {
+                                        // Return end time 5 minutes from now
+                                        return Date.now() + 5 * 60 * 1000;
                                     }
-                                } else {
-                                    statusP.textContent = 'Could not get faculty location. Please try again.';
+                                    return {
+                                        facultyLatitude: 40.7128,
+                                        facultyLongitude: -74.0060
+                                    };
                                 }
                             });
-                        }, handleLocationError);
-                    } else {
-                        statusP.textContent = 'Geolocation is not supported by this browser.';
-                    }
-                });
-
-                function handleLocationError(error) {
-                    let message = 'An unknown error occurred.';
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            message = "Location permission denied. Please enable it in your browser settings.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            message = "Location information is unavailable.";
-                            break;
-                        case error.TIMEOUT:
-                            message = "The request to get user location timed out.";
-                            break;
-                    }
-                    statusP.textContent = `Unable to retrieve your location: ${message}`;
+                        },
+                        on: (event, callback) => {
+                            if (event === 'value') {
+                                // Simulate status change after 2 seconds
+                                setTimeout(() => {
+                                    callback({ val: () => 'open' });
+                                }, 2000);
+                            }
+                        },
+                        set: (value) => {
+                            return new Promise((resolve) => {
+                                // Simulate successful attendance marking
+                                setTimeout(() => {
+                                    console.log('Attendance marked:', value);
+                                    resolve();
+                                }, 1000);
+                            });
+                        },
+                        get: () => {
+                            return Promise.resolve({
+                                val: () => false
+                            });
+                        }
+                    };
                 }
+            };
 
-                statusRef.on('value', (snapshot) => {
-                    const status = snapshot.val();
-                    if (status === 'open') {
-                        statusP.textContent = 'Attendance is now open!';
-                        studentStatusRef.get().then(snap => {
-                            if (!snap.val()) {
-                                markAttendanceBtn.style.display = 'block';
+            const statusRef = attendanceRef.child('status');
+            const studentStatusRef = attendanceRef.child('students').child(studentId);
+
+            let timerInterval;
+
+            markAttendanceBtn.addEventListener('click', () => {
+                // Show loading state
+                markAttendanceBtn.innerHTML = '<span class="loading"></span> Checking Location...';
+                markAttendanceBtn.disabled = true;
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const studentLat = position.coords.latitude;
+                        const studentLon = position.coords.longitude;
+
+                        attendanceRef.once('value').then(snapshot => {
+                            const data = snapshot.val();
+                            if (data && data.facultyLatitude && data.facultyLongitude) {
+                                const distance = calculateDistance(studentLat, studentLon, data.facultyLatitude, data.facultyLongitude);
+
+                                if (distance <= maxDistanceMeters) {
+                                    studentStatusRef.set(true)
+                                        .then(() => {
+                                            statusP.textContent = 'Your attendance has been recorded successfully!';
+                                            statusP.className = 'status-success';
+                                        })
+                                        .catch(error => {
+                                            statusP.textContent = 'Error: Could not mark attendance. Please try again.';
+                                            statusP.className = 'status-error';
+                                            markAttendanceBtn.innerHTML = '<i class="fas fa-location-arrow location-icon"></i> Mark Attendance';
+                                            markAttendanceBtn.disabled = false;
+                                        });
+                                } else {
+                                    statusP.textContent = `You are ${Math.round(distance)}m away from class. Please come within ${maxDistanceMeters}m to mark attendance.`;
+                                    statusP.className = 'status-error';
+                                    markAttendanceBtn.innerHTML = '<i class="fas fa-location-arrow location-icon"></i> Mark Attendance';
+                                    markAttendanceBtn.disabled = false;
+                                }
+                            } else {
+                                statusP.textContent = 'Could not get faculty location. Please try again.';
+                                statusP.className = 'status-error';
+                                markAttendanceBtn.innerHTML = '<i class="fas fa-location-arrow location-icon"></i> Mark Attendance';
                                 markAttendanceBtn.disabled = false;
-                                markAttendanceBtn.textContent = 'Mark Attendance';
                             }
                         });
-
-                        attendanceRef.child('endTime').once('value').then((snap) => {
-                            const endTime = snap.val();
-                            if (endTime) {
-                                clearInterval(timerInterval);
-                                timerInterval = setInterval(() => updateTimer(endTime), 1000);
-                                updateTimer(endTime);
-                            }
-                        });
-
-                    } else {
-                        statusP.textContent = 'Attendance is currently closed.';
-                        markAttendanceBtn.style.display = 'none';
-                        clearInterval(timerInterval);
-                        timerDiv.textContent = '';
-                    }
-                });
-
-                studentStatusRef.on('value', (snapshot) => {
-                    if (snapshot.val() === true) {
-                        markAttendanceBtn.textContent = 'Attendance Marked';
-                        markAttendanceBtn.disabled = true;
-                        statusP.textContent = 'Your attendance has been recorded.';
-                    }
-                });
-
-                function updateTimer(endTime) {
-                    const now = Date.now();
-                    const remainingTime = Math.max(0, endTime - now);
-
-                    if (remainingTime === 0) {
-                        timerDiv.textContent = "Time's up!";
-                        clearInterval(timerInterval);
-                        return;
-                    }
-                    
-                    const minutes = Math.floor((remainingTime / 1000) / 60);
-                    const seconds = Math.floor((remainingTime / 1000) % 60);
-                    
-                    timerDiv.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    }, handleLocationError, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
+                } else {
+                    statusP.textContent = 'Geolocation is not supported by this browser.';
+                    statusP.className = 'status-error';
+                    markAttendanceBtn.innerHTML = '<i class="fas fa-location-arrow location-icon"></i> Mark Attendance';
+                    markAttendanceBtn.disabled = false;
                 }
+            });
 
-                function calculateDistance(lat1, lon1, lat2, lon2) {
-                    const R = 6371e3; // metres
-                    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-                    const φ2 = lat2 * Math.PI/180;
-                    const Δφ = (lat2-lat1) * Math.PI/180;
-                    const Δλ = (lon2-lon1) * Math.PI/180;
-
-                    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                              Math.cos(φ1) * Math.cos(φ2) *
-                              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-                    const d = R * c; // in metres
-                    return d;
+            function handleLocationError(error) {
+                let message = 'An unknown error occurred.';
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = "Location permission denied. Please enable it in your browser settings.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Location information is unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        message = "The request to get user location timed out.";
+                        break;
                 }
+                statusP.textContent = `Unable to retrieve your location: ${message}`;
+                statusP.className = 'status-error';
+                markAttendanceBtn.innerHTML = '<i class="fas fa-location-arrow location-icon"></i> Mark Attendance';
+                markAttendanceBtn.disabled = false;
+            }
 
-            }, 500); // 500ms delay
+            statusRef.on('value', (snapshot) => {
+                const status = snapshot.val();
+                if (status === 'open') {
+                    statusP.textContent = 'Attendance is now open! You can mark your attendance.';
+                    statusP.className = 'status-success';
+                    studentStatusRef.get().then(snap => {
+                        if (!snap.val()) {
+                            markAttendanceBtn.style.display = 'inline-flex';
+                            markAttendanceBtn.disabled = false;
+                            markAttendanceBtn.innerHTML = '<i class="fas fa-location-arrow location-icon"></i> Mark Attendance';
+                        }
+                    });
+
+                    attendanceRef.child('endTime').once('value').then((snap) => {
+                        const endTime = snap.val();
+                        if (endTime) {
+                            clearInterval(timerInterval);
+                            timerInterval = setInterval(() => updateTimer(endTime), 1000);
+                            updateTimer(endTime);
+                        }
+                    });
+
+                } else {
+                    statusP.textContent = 'Attendance is currently closed.';
+                    statusP.className = 'status-pending';
+                    markAttendanceBtn.style.display = 'none';
+                    clearInterval(timerInterval);
+                    timerDiv.textContent = '--:--';
+                }
+            });
+
+            function updateTimer(endTime) {
+                const now = Date.now();
+                const remainingTime = Math.max(0, endTime - now);
+
+                if (remainingTime === 0) {
+                    timerDiv.textContent = "Time's up!";
+                    timerDiv.style.color = '#e74c3c';
+                    clearInterval(timerInterval);
+                    markAttendanceBtn.style.display = 'none';
+                    statusP.textContent = 'Attendance time has ended.';
+                    statusP.className = 'status-error';
+                    return;
+                }
+                
+                const minutes = Math.floor((remainingTime / 1000) / 60);
+                const seconds = Math.floor((remainingTime / 1000) % 60);
+                
+                timerDiv.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                // Change color when time is running out
+                if (minutes < 1) {
+                    timerDiv.style.color = '#e74c3c';
+                } else if (minutes < 3) {
+                    timerDiv.style.color = '#f39c12';
+                } else {
+                    timerDiv.style.color = '#2c3e50';
+                }
+            }
+
+            function calculateDistance(lat1, lon1, lat2, lon2) {
+                const R = 6371e3; // metres
+                const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+                const φ2 = lat2 * Math.PI/180;
+                const Δφ = (lat2-lat1) * Math.PI/180;
+                const Δλ = (lon2-lon1) * Math.PI/180;
+
+                const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                          Math.cos(φ1) * Math.cos(φ2) *
+                          Math.sin(Δλ/2) * Math.sin(Δλ/2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+                const d = R * c; // in metres
+                return d;
+            }
         });
     </script>
 </body>
