@@ -4,57 +4,310 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal</title>
-    <link rel="stylesheet" href="public/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            color: #2575fc;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .container h2 {
+            color: #2575fc;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .container h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 2px;
+        }
+
+        .student-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .student-box {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-box:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .student-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .student-box:hover:before {
+            transform: translateY(0);
+        }
+
+        .student-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .student-box i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .student-box:hover i {
+            transform: scale(1.2);
+        }
+
         .dropdown {
             position: relative;
-            display: inline-block;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            background-color: white;
+            min-width: 300px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            border-radius: 10px;
+            overflow: hidden;
+            top: 100%;
+            left: 0;
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {background-color: #f1f1f1}
 
         .dropdown:hover .dropdown-content {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 15px 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .dropdown-content a i {
+            margin-right: 10px;
+            color: #2575fc;
+            font-size: 1.2rem;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            padding-left: 25px;
+        }
+
+        .dropdown-content a:hover i {
+            color: #6a11cb;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background-color: rgba(37, 117, 252, 0.1);
+        }
+
+        .back-link:hover {
+            background-color: #2575fc;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .notification {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .student-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .dropdown-content {
+                left: 50%;
+                transform: translateX(-50%) translateY(-10px);
+                min-width: 280px;
+            }
+            
+            .dropdown:hover .dropdown-content {
+                transform: translateX(-50%) translateY(0);
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Student Portal</h1>
+        <p>Access your classes, attendance, and more</p>
     </header>
     <div class="container">
         <h2>Welcome, Student!</h2>
         <div class="student-container">
             <div class="dropdown">
                 <div class="student-box todays-classes-box">
+                    <i class="fas fa-calendar-day"></i>
                     <h3>Today's Classes</h3>
+                    <div class="notification">2</div>
                 </div>
                 <div class="dropdown-content">
-                    <a href="physics.html">Physics - 10:00 am to 11:00 am</a>
-                    <a href="maths.html">Maths - 11:30 am to 12:30 pm</a>
+                    <a href="physics.html">
+                        <i class="fas fa-atom"></i>
+                        Physics - 10:00 am to 11:00 am
+                    </a>
+                    <a href="maths.html">
+                        <i class="fas fa-calculator"></i>
+                        Maths - 11:30 am to 12:30 pm
+                    </a>
                 </div>
             </div>
             <div class="student-box attendance-record-box" onclick="location.href='attendance-record.html';">
+                <i class="fas fa-clipboard-check"></i>
                 <h3>Attendance Record</h3>
             </div>
         </div>
-        <a href="/">Back to Home</a>
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to boxes on page load
+            const boxes = document.querySelectorAll('.student-box');
+            boxes.forEach((box, index) => {
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    box.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    box.style.opacity = '1';
+                    box.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+            
+            // Add click effect to all student boxes
+            const allBoxes = document.querySelectorAll('.student-box');
+            allBoxes.forEach(box => {
+                box.addEventListener('mousedown', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                box.addEventListener('mouseup', function() {
+                    this.style.transform = '';
+                });
+                
+                box.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // Simulate loading today's classes from an API
+            setTimeout(() => {
+                console.log("Today's classes loaded successfully");
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

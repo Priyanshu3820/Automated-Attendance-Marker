@@ -3,59 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Login</title>
-    <link rel="stylesheet" href="public/style.css">
+    <title>Faculty Login | University Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .university-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            transition: var(--transition);
+        }
+
+        .container:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .input-with-icon input {
+            padding-left: 45px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .notification {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .notification.error {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .notification.success {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--success-color);
+            color: #27ae60;
+        }
+
+        .credentials-hint {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 25px;
+            font-size: 0.9rem;
+        }
+
+        .credentials-hint h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Faculty Login</h1>
+        <p>Access your university faculty portal</p>
+        <div class="university-badge">University Academic System</div>
     </header>
+    
     <div class="container">
-        <!-- Example credentials:
-             ID: faculty@example.com
-             Password: password123
-        -->
-        <form onsubmit="login(event)">
+        <div id="notification" class="notification"></div>
+        
+        <form id="loginForm">
             <div class="form-group">
-                <label for="username">ID</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">Faculty ID</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="Enter your faculty ID" required>
+                </div>
             </div>
+            
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="checkbox" onclick="togglePassword()"> Show Password
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Remember me</label>
             </div>
-            <button type="submit">Login</button>
+            
+            <button type="submit" id="loginButton">Login</button>
+            
+            <div class="forgot-password">
+                <a href="#">Forgot password?</a>
+            </div>
         </form>
+        
+        <div class="credentials-hint">
+            <h3>Demo Credentials:</h3>
+            <p>ID: faculty@example.com</p>
+            <p>Password: password123</p>
+        </div>
     </div>
+    
+    <footer>
+        <p>&copy; 2023 University Faculty Portal. All rights reserved.</p>
+    </footer>
 
     <script>
+        // DOM elements
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const notification = document.getElementById('notification');
+        const loginButton = document.getElementById('loginButton');
+        
+        // Hardcoded credentials (for demo only - not for production)
+        const correctUsername = "faculty@example.com";
+        const correctPassword = "password123";
+        
+        // Toggle password visibility
         function togglePassword() {
-            var passwordField = document.getElementById("password");
+            const passwordField = document.getElementById("password");
+            const eyeIcon = document.querySelector('.password-toggle i');
+            
             if (passwordField.type === "password") {
                 passwordField.type = "text";
+                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 passwordField.type = "password";
+                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
-
+        
+        // Show notification message
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Handle form submission
         function login(event) {
-            event.preventDefault(); // Prevent form from submitting the default way
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-
-            // Hardcoded credentials
-            var correctUsername = "faculty@example.com";
-            var correctPassword = "password123";
-
-            if (username === correctUsername && password === correctPassword) {
-                window.location.href = "faculty.html";
-            } else {
-                alert("Incorrect username or password");
+            event.preventDefault();
+            
+            // Get input values
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Basic validation
+            if (!username || !password) {
+                showNotification('Please fill in all fields', 'error');
+                loginForm.classList.add('shake');
+                setTimeout(() => loginForm.classList.remove('shake'), 500);
+                return;
             }
+            
+            if (!isValidEmail(username)) {
+                showNotification('Please enter a valid email address', 'error');
+                usernameInput.focus();
+                loginForm.classList.add('shake');
+                setTimeout(() => loginForm.classList.remove('shake'), 500);
+                return;
+            }
+            
+            // Change button text to show loading state
+            loginButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            loginButton.disabled = true;
+            
+            // Simulate authentication process (replace with actual API call in production)
+            setTimeout(() => {
+                if (username === correctUsername && password === correctPassword) {
+                    showNotification('Login successful! Redirecting...', 'success');
+                    
+                    // Store login state (in a real application, this would be a secure token)
+                    if (document.getElementById('rememberMe').checked) {
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+                    
+                    // Redirect to faculty dashboard
+                    setTimeout(() => {
+                        window.location.href = "faculty.html";
+                    }, 1500);
+                } else {
+                    showNotification('Incorrect username or password', 'error');
+                    loginForm.classList.add('shake');
+                    setTimeout(() => loginForm.classList.remove('shake'), 500);
+                    
+                    // Reset button state
+                    loginButton.innerHTML = 'Login';
+                    loginButton.disabled = false;
+                }
+            }, 1500);
         }
+        
+        // Check if remember me was previously checked
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('rememberMe') === 'true') {
+                document.getElementById('rememberMe').checked = true;
+            }
+            
+            // Focus on username field when page loads
+            usernameInput.focus();
+            
+            // Attach form submit event
+            loginForm.addEventListener('submit', login);
+        });
     </script>
 </body>
 </html>

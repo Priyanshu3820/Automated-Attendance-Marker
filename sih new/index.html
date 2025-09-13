@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAttend - Automated Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Home Page -->
+    <section id="home-page" class="page active">
+        <div class="page-container">
+            <div class="container">
+                <header class="header">
+                    <div class="logo">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h1>SMARTATTEND</h1>
+                    </div>
+                    <p class="tagline">Automated Attendance Marking System</p>
+                </header>
+
+                <main class="main-content">
+                    <div class="hero-section">
+                        <h2 class="hero-title">Welcome to SmartAttend</h2>
+                        <p class="hero-subtitle">Streamlined attendance management for modern educational institutions</p>
+                        
+                        <div class="user-cards">
+                            <div class="user-card" onclick="navigateToPage('faculty-login')">
+                                <div class="card-icon faculty-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <h3>Faculty Login</h3>
+                                <p>Access faculty dashboard and manage attendance</p>
+                                <div class="card-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
+
+                            <div class="user-card" onclick="navigateToPage('student-login')">
+                                <div class="card-icon student-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <h3>Student Login</h3>
+                                <p>View your classes and attendance records</p>
+                                <div class="card-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
+
+                            <div class="user-card" onclick="navigateToPage('admin-login')">
+                                <div class="card-icon admin-icon">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <h3>Admin Login</h3>
+                                <p>System administration and user management</p>
+                                <div class="card-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Faculty Login Page -->
+    <section id="faculty-login" class="page">
+        <div class="page-container">
+            <div class="container">
+                <div class="auth-container">
+                    <button class="back-btn" onclick="navigateToPage('home-page')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </button>
+                    
+                    <div class="auth-card">
+                        <div class="auth-header">
+                            <div class="auth-icon faculty-icon">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h2>Faculty Login</h2>
+                            <p>Access your faculty dashboard</p>
+                        </div>
+
+                        <form class="auth-form" onsubmit="handleLogin(event, 'faculty')">
+                            <div class="form-group">
+                                <label for="faculty-id" class="form-label">Faculty ID</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-id-card input-icon"></i>
+                                    <input type="text" id="faculty-id" class="form-control" placeholder="Enter your faculty ID" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="faculty-password" class="form-label">Password</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-lock input-icon"></i>
+                                    <input type="password" id="faculty-password" class="form-control" placeholder="Enter your password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('faculty-password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary btn--full-width">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Login Page -->
+    <section id="student-login" class="page">
+        <div class="page-container">
+            <div class="container">
+                <div class="auth-container">
+                    <button class="back-btn" onclick="navigateToPage('home-page')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </button>
+                    
+                    <div class="auth-card student-card">
+                        <div class="auth-header">
+                            <div class="auth-icon student-icon">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h2>Student Login</h2>
+                            <p>Access your student dashboard</p>
+                        </div>
+
+                        <form class="auth-form" onsubmit="handleLogin(event, 'student')">
+                            <div class="form-group">
+                                <label for="student-id" class="form-label">Student ID</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-id-badge input-icon"></i>
+                                    <input type="text" id="student-id" class="form-control" placeholder="Enter your student ID" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="student-password" class="form-label">Password</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-lock input-icon"></i>
+                                    <input type="password" id="student-password" class="form-control" placeholder="Enter your password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('student-password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary btn--full-width student-login-btn">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Student Dashboard Page -->
+    <section id="student-dashboard" class="page">
+        <div class="page-container">
+            <div class="container">
+                <header class="dashboard-header">
+                    <button class="back-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                    
+                    <div class="dashboard-title">
+                        <h2>Student Dashboard</h2>
+                        <p id="student-welcome">Welcome back, Student!</p>
+                    </div>
+                </header>
+
+                <!-- Low Attendance Alert -->
+                <div id="low-attendance-alert" class="alert-card hidden">
+                    <div class="alert-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>Low Attendance Warning</h4>
+                        <p id="low-attendance-message">You have low attendance in some subjects. Please attend more classes.</p>
+                    </div>
+                </div>
+
+                <!-- Active Session Alert -->
+                <div id="active-session-alert" class="session-alert hidden">
+                    <div class="session-content">
+                        <div class="session-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4 id="session-subject">Attendance Session Active</h4>
+                            <p id="session-details">Click to mark your attendance</p>
+                        </div>
+                        <button class="btn btn--primary" onclick="markAttendance()">
+                            <i class="fas fa-check"></i>
+                            Mark Present
+                        </button>
+                    </div>
+                </div>
+
+                <main class="dashboard-content">
+                    <div class="dashboard-grid">
+                        <!-- Attendance Overview -->
+                        <div class="dashboard-card attendance-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-pie"></i> Attendance Overview</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="attendance-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="attended-classes">42</span>
+                                        <span class="stat-label">Classes Attended</span>
+                                    </div>
+                                    <div class="stat-divider"></div>
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="total-classes">45</span>
+                                        <span class="stat-label">Total Classes</span>
+                                    </div>
+                                    <div class="stat-divider"></div>
+                                    <div class="stat-item">
+                                        <span class="stat-number status--success" id="attendance-rate">93.3%</span>
+                                        <span class="stat-label">Attendance Rate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subject-wise Attendance -->
+                        <div class="dashboard-card subjects-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-book"></i> Subject-wise Attendance</h3>
+                            </div>
+                            <div class="card-body" id="subject-attendance">
+                                <!-- Subject attendance will be populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Today's Classes -->
+                        <div class="dashboard-card classes-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-calendar-day"></i> Today's Classes</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="class-item">
+                                    <div class="class-info">
+                                        <div class="class-subject">CS301 - Data Structures</div>
+                                        <div class="class-details">
+                                            <span class="class-time">
+                                                <i class="fas fa-clock"></i>
+                                                10:00 AM - 11:00 AM
+                                            </span>
+                                            <span class="class-room">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                Room 101
+                                            </span>
+                                        </div>
+                                        <div class="class-instructor">
+                                            <i class="fas fa-user"></i>
+                                            Dr. Apurva Jain
+                                        </div>
+                                    </div>
+                                    <div class="class-status status--success">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+
+                                <div class="class-item">
+                                    <div class="class-info">
+                                        <div class="class-subject">MATH205 - Discrete Mathematics</div>
+                                        <div class="class-details">
+                                            <span class="class-time">
+                                                <i class="fas fa-clock"></i>
+                                                11:30 AM - 12:30 PM
+                                            </span>
+                                            <span class="class-room">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                Room 205
+                                            </span>
+                                        </div>
+                                        <div class="class-instructor">
+                                            <i class="fas fa-user"></i>
+                                            Prof. Vaibhav Parashar
+                                        </div>
+                                    </div>
+                                    <div class="class-status status--info">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="dashboard-card actions-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="action-buttons">
+                                    <button class="action-btn">
+                                        <i class="fas fa-calendar"></i>
+                                        View Schedule
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-history"></i>
+                                        Attendance History
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-download"></i>
+                                        Download Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Faculty Dashboard Page -->
+    <section id="faculty-dashboard" class="page">
+        <div class="page-container">
+            <div class="container">
+                <header class="dashboard-header">
+                    <button class="back-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                    
+                    <div class="dashboard-title">
+                        <h2>Faculty Dashboard</h2>
+                        <p id="faculty-welcome">Welcome back, Faculty!</p>
+                    </div>
+                </header>
+
+                <main class="dashboard-content">
+                    <div class="dashboard-grid">
+                        <!-- Attendance Session Control -->
+                        <div class="dashboard-card session-control-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-play-circle"></i> Attendance Session</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="session-inactive" class="session-controls">
+                                    <div class="form-group">
+                                        <label class="form-label">Select Subject</label>
+                                        <select id="subject-select" class="form-control">
+                                            <option value="CS301">CS301 - Data Structures</option>
+                                            <option value="MATH205">MATH205 - Discrete Mathematics</option>
+                                            <option value="CS302">CS302 - Software Engineering</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn--primary btn--full-width" onclick="startAttendanceSession()">
+                                        <i class="fas fa-play"></i>
+                                        Start Attendance Session
+                                    </button>
+                                </div>
+                                <div id="session-active" class="session-active hidden">
+                                    <div class="active-session-info">
+                                        <h4 id="active-subject">CS301 - Data Structures</h4>
+                                        <p>Session started at: <span id="session-start-time"></span></p>
+                                        <p>Duration: <span id="session-duration">15:00</span></p>
+                                    </div>
+                                    <button class="btn btn--outline btn--full-width" onclick="endAttendanceSession()">
+                                        <i class="fas fa-stop"></i>
+                                        End Session
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Class Overview -->
+                        <div class="dashboard-card class-overview-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-bar"></i> Class Overview</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="overview-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">45</span>
+                                        <span class="stat-label">Total Students</span>
+                                    </div>
+                                    <div class="stat-divider"></div>
+                                    <div class="stat-item">
+                                        <span class="stat-number status--success">92.3%</span>
+                                        <span class="stat-label">Average Attendance</span>
+                                    </div>
+                                    <div class="stat-divider"></div>
+                                    <div class="stat-item">
+                                        <span class="stat-number status--warning" id="at-risk-count">2</span>
+                                        <span class="stat-label">At Risk Students</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Students List -->
+                        <div class="dashboard-card students-list-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-users"></i> Students List</h3>
+                                <button class="btn btn--sm btn--outline" onclick="refreshStudentsList()">
+                                    <i class="fas fa-refresh"></i>
+                                    Refresh
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="students-list">
+                                    <!-- Students will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Low Attendance Students -->
+                        <div class="dashboard-card low-attendance-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-exclamation-triangle"></i> Low Attendance Alert</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="low-attendance-students">
+                                    <!-- Low attendance students will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Login Page -->
+    <section id="admin-login" class="page">
+        <div class="page-container">
+            <div class="container">
+                <div class="auth-container">
+                    <button class="back-btn" onclick="navigateToPage('home-page')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </button>
+                    
+                    <div class="auth-card">
+                        <div class="auth-header">
+                            <div class="auth-icon admin-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <h2>Admin Login</h2>
+                            <p>System administration access</p>
+                        </div>
+
+                        <form class="auth-form" onsubmit="handleLogin(event, 'admin')">
+                            <div class="form-group">
+                                <label for="admin-id" class="form-label">Admin ID</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-user-shield input-icon"></i>
+                                    <input type="text" id="admin-id" class="form-control" placeholder="Enter your admin ID" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="admin-password" class="form-label">Password</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-lock input-icon"></i>
+                                    <input type="password" id="admin-password" class="form-control" placeholder="Enter your password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('admin-password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary btn--full-width">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Dashboard Page -->
+    <section id="admin-dashboard" class="page">
+        <div class="page-container">
+            <div class="container">
+                <header class="dashboard-header">
+                    <button class="back-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                    
+                    <div class="dashboard-title">
+                        <h2>Admin Dashboard</h2>
+                        <p>Welcome back, Administrator!</p>
+                    </div>
+                </header>
+
+                <main class="dashboard-content">
+                    <div class="placeholder-content">
+                        <div class="placeholder-card">
+                            <i class="fas fa-cog"></i>
+                            <h3>Admin Dashboard</h3>
+                            <p>This dashboard will contain administrative features like user management, system configuration, and analytics.</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

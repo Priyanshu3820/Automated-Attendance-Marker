@@ -4,57 +4,360 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Portal</title>
-    <link rel="stylesheet" href="public/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark-color);
+        }
+
+        header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--secondary-color);
+            font-size: 2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .faculty-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .faculty-box {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .faculty-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .faculty-box:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .faculty-box:hover:before {
+            transform: scaleX(1);
+        }
+
+        .lectures-box {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+        }
+
+        .classes-box {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .faculty-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .faculty-box i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .faculty-box:hover i {
+            transform: scale(1.1);
+        }
+
         .dropdown {
             position: relative;
-            display: inline-block;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            background-color: white;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin: 10px auto;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {background-color: #f1f1f1}
 
         .dropdown:hover .dropdown-content {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: var(--dark-color);
+            padding: 15px 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            border-bottom: 1px solid #eee;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f9fa;
+            padding-left: 25px;
+        }
+
+        .dropdown-content a:hover i {
+            color: var(--accent-color);
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .faculty-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .date-display {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Faculty Portal</h1>
+        <p>Manage your classes and lectures with ease</p>
     </header>
     <div class="container">
-        <h2>Welcome, Faculty!</h2>
+        <h2>Welcome, Professor Vaibhav!</h2>
+        <div class="date-display" id="date-display">Loading date...</div>
+        <div class="welcome-message">Access your upcoming lectures and classes</div>
+        
         <div class="faculty-container">
             <div class="dropdown">
                 <div class="faculty-box lectures-box">
-                    <h3>Today's lectures</h3>
+                    <div class="notification-badge">2</div>
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>Today's Lectures</h3>
+                    <p>Click to view scheduled lectures</p>
                 </div>
                 <div class="dropdown-content">
-                    <a href="section-a.html">section a-10:00 am to 11:00 am</a>
-                    <a href="section-b.html">section b-11:30 am to 12:30 pm</a>
+                    <a href="section-a.html">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Section A</strong>
+                            <p>10:00 AM - 11:00 AM | Room 305</p>
+                        </div>
+                    </a>
+                    <a href="section-b.html">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Section B</strong>
+                            <p>11:30 AM - 12:30 PM | Room 412</p>
+                        </div>
+                    </a>
                 </div>
             </div>
+            
             <div class="faculty-box classes-box" onclick="location.href='my-classes.html';">
-                <h3>My classes</h3>
+                <i class="fas fa-users"></i>
+                <h3>My Classes</h3>
+                <p>View all your classes</p>
             </div>
         </div>
-        <a href="/">Back to Home</a>
+        
+        <div style="text-align: center;">
+            <a href="/" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
     </div>
+
+    <script>
+        // Update date display
+        function updateDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date();
+            const dateString = today.toLocaleDateString('en-US', options);
+            document.getElementById('date-display').textContent = dateString;
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDate();
+            
+            // Add animation to boxes on page load
+            const boxes = document.querySelectorAll('.faculty-box');
+            boxes.forEach((box, index) => {
+                box.style.opacity = "0";
+                box.style.transform = "translateY(20px)";
+                
+                setTimeout(() => {
+                    box.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                    box.style.opacity = "1";
+                    box.style.transform = "translateY(0)";
+                }, 200 * index);
+            });
+            
+            // Add click effect to all boxes
+            boxes.forEach(box => {
+                box.addEventListener('mousedown', function() {
+                    this.style.transform = "scale(0.95)";
+                });
+                
+                box.addEventListener('mouseup', function() {
+                    this.style.transform = "";
+                });
+                
+                box.addEventListener('mouseleave', function() {
+                    this.style.transform = "";
+                });
+            });
+        });
+    </script>
 </body>
 </html>
